@@ -4,11 +4,13 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:3001",
+    "http://localhost:3005",
     "https://quivr.app",
     "https://www.quivr.app",
     "http://quivr.app",
     "http://www.quivr.app",
-    "https://platform-jet.vercel.app/"
+    "https://platform-jet.vercel.app",
+    "platform-*-liamvmurphy.vercel.app",
     "*",
 ]
 
