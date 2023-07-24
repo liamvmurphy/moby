@@ -137,7 +137,7 @@ class OpenAIFunctionsBrainPicking(BaseBrainPicking):
         )  # pyright: ignore reportPrivateUsage=none
 
     def _construct_prompt(
-        self, question: str, useContext: bool = False, useHistory: bool = False
+        self, question: str, useContext: bool = False, useHistory: bool = True
     ) -> List[Dict[str, str]]:
         """
         Constructs a prompt given a question, and optionally include context and history

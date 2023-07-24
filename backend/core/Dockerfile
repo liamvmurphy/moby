@@ -15,4 +15,6 @@ RUN chmod +x /code/scripts/start.sh
 
 COPY . /code
 
+EXPOSE 5051
+
 ENTRYPOINT ["bash", "/code/scripts/start.sh"]

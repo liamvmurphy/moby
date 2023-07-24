@@ -58,3 +58,5 @@ backend/core/local_models/*
 
 ## scripts
 .migration_info
+
+.idea
