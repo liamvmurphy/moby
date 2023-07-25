@@ -27,7 +27,7 @@ class BaseBrainPicking(BaseModel):
     temperature: float = 0.0
     chat_id: str = None  # pyright: ignore reportPrivateUsage=none
     brain_id: str = None  # pyright: ignore reportPrivateUsage=none
-    max_tokens: int = 256
+    max_tokens: int = 400
     user_openai_api_key: str = None  # pyright: ignore reportPrivateUsage=none
     streaming: bool = False
 
