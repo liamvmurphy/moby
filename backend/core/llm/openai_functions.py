@@ -115,9 +115,10 @@ class OpenAIFunctionsBrainPicking(BaseBrainPicking):
         """
         Retrieves the chat history in a formatted list
         """
-        logger.info("Getting chat history")
         history = get_chat_history(self.chat_id)
-        return [
+
+        # Convert the chat history into the appropriate list
+        formatted_history = [
             item
             for chat in history
             for item in [
@@ -126,18 +127,44 @@ class OpenAIFunctionsBrainPicking(BaseBrainPicking):
             ]
         ]
 
+        # Filter for pairs where the user message starts with "This is a reminder"
+        reminder_pairs = [
+            pair
+            for pair in zip(formatted_history[::2], formatted_history[1::2])
+            if pair[0]['content'].startswith("This is a reminder")
+        ]
+
+        # Extract the last reminder pair, if any
+        extracted_message = reminder_pairs[-1] if reminder_pairs else None
+        logger.info("3 Getting chat history")
+        # Get only the last 6 items (last 3 pairs of user and assistant messages)
+        last_three_pairs = formatted_history[-6:]
+
+        # If there was an extracted message, add it to the start of the last_three_pairs list
+        if extracted_message is not None:
+            final_list = list(extracted_message) + last_three_pairs
+        else:
+            final_list = last_three_pairs
+
+
+
+        for i, item in enumerate(final_list):
+            logger.info(f"Message {i + 1}: {item}")
+
+        return final_list
+
     def _get_context(self, question: str) -> str:
         """
         Retrieve documents related to the question
         """
         logger.info("Getting context")
-
+        logger.info(f"Question: {question}")
         return self.vector_store.similarity_search(
             query=question
         )  # pyright: ignore reportPrivateUsage=none
 
     def _construct_prompt(
-        self, question: str, useContext: bool = False, useHistory: bool = True
+        self, question: str, useContext: bool = False, useHistory: bool = False
     ) -> List[Dict[str, str]]:
         """
         Constructs a prompt given a question, and optionally include context and history
@@ -187,15 +214,16 @@ class OpenAIFunctionsBrainPicking(BaseBrainPicking):
         ]
 
         # First, try to get an answer using just the question
-        response = self._get_model_response(
-            messages=self._construct_prompt(question), functions=functions
-        )
-        formatted_response = format_answer(response)
+        # response = self._get_model_response(
+        #     messages=self._construct_prompt(question), functions=functions
+        # )
+        # formatted_response = format_answer(response)
 
         # If the model calls for history, try again with history included
         if (
-            formatted_response.function_call
-            and formatted_response.function_call.name == "get_history"
+            True
+            # formatted_response.function_call
+            # and formatted_response.function_call.name == "get_history"
         ):
             logger.info("Model called for history")
             response = self._get_model_response(
